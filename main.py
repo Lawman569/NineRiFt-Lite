@@ -136,7 +136,7 @@ class NineRiFt(App):
                 else:
                     sf = ['*.bin']
                 filters = sf+check
-            if mod is 'esx' or mod is 'max':
+            if mod == 'esx' or mod == 'max':
                 sf = ['*.bin.enc']
                 filters = sf+check
             print('selfile_filter set to %s' % filters)
