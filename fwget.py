@@ -172,6 +172,12 @@ class FWGet():
 
     def Gimme(self, firm, ver):
         tprint('download started')
-        self.getFile(firm,ver)
-        self.getFile(firm, ver)
+        try:
+            self.getFile(firm, ver)
+            if self.model.startswith('m365') and firm == 'DRV':
+                # second pass fetches the plain .bin via the getboth toggle
+                self.getFile(firm, ver)
+        finally:
+            # reset the toggle so behavior never depends on session history
+            self.getboth = False
         tprint('download finished')
