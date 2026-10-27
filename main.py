@@ -194,9 +194,5 @@ class NineRiFt(App):
             return
         self.fwupd.Flash(chooser.selection[0])
 
-    @mainthread
-    def setprogbar(self, prog, maxprog):
-        FlashScreen.setprog(prog, maxprog)
-
 if __name__ == "__main__":
     NineRiFt().run()
