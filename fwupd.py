@@ -10,13 +10,15 @@ from py9b.command.update import *
 from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.event import EventDispatcher
-from kivy.properties import BooleanProperty, StringProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, ObjectProperty, NumericProperty
 from utils import tprint, specialthread
 
 
 class FWUpd(EventDispatcher):
     device = StringProperty('')
     lock = BooleanProperty(True)
+    progress = NumericProperty(0)
+    maxprog = NumericProperty(100)
 
     def __init__(self, conn):
         self.devices = {'ble': BT.BLE, 'drv': BT.ESC, 'bms': BT.BMS, 'extbms': BT.EXTBMS}
@@ -24,8 +26,6 @@ class FWUpd(EventDispatcher):
         self.PING_RETRIES = 3
         self.nolock = False
         self.conn = conn
-        self.progress = 0
-        self.maxprog = 100
 
     def checksum(self, s, data):
         for c in data:
