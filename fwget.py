@@ -1,6 +1,7 @@
 import os
 import requests
 import hashlib
+import json
 try:
     from kivymd.toast import toast
 except:
@@ -129,6 +130,29 @@ class FWGet():
                 tprint("Connection error. Local files aren't available. Aborting.")
                 return(False, completePath)
 
+    def _parse_repo(self, raw):
+        """Strictly parse and validate a repository JSON document.
+
+        Returns the parsed dict on success, None on any parse or
+        structure failure. Never executes payload content.
+        """
+        try:
+            d = json.loads(raw)
+        except ValueError:
+            return None
+        if not isinstance(d, dict) or "repo" not in d:
+            return None
+        repo = d["repo"]
+        infos = repo.get("infos") if isinstance(repo, dict) else None
+        files = repo.get("files") if isinstance(repo, dict) else None
+        if not isinstance(infos, dict) or not isinstance(files, dict):
+            return None
+        if not all(isinstance(infos.get(k), str) and infos[k] for k in ("name", "dirname", "files_URL")):
+            return None
+        if not all(isinstance(files.get(k), list) for k in ("DRV", "BMS", "BLE")):
+            return None
+        return d
+
     def loadRepo(self, jsonURL):
         d = ''
         noInternet = False
@@ -147,15 +171,21 @@ class FWGet():
                 with open(self.cachePath + hashedName + ".json", 'wb') as f:
                     f.write(r.content)
                 with open(self.cachePath + hashedName + ".json") as f:
-                    d = eval(f.read())
-                    print("Fetched repo JSON.")
+                    d = self._parse_repo(f.read())
+                if d is None:
+                    tprint("Invalid or unexpected repository file. Check the repo URL.")
+                    return(False)
+                print("Fetched repo JSON.")
             except requests.ConnectionError:
                 tprint("Failed to grab JSON! (requests.ConnectionError)")
                 return(False)
 
         elif os.path.isfile(self.cachePath + hashedName + ".json"):
             with open(self.cachePath + hashedName + ".json") as f:
-                d = eval(f.read())
+                d = self._parse_repo(f.read())
+            if d is None:
+                tprint("Invalid or unexpected cached repo file. Delete it and check the repo URL.")
+                return(False)
             print("Fetched cached repo JSON.")
         else:
             tprint("Couldn't download file and couldn't load from cache. Aborting.")
