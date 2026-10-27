@@ -69,7 +69,7 @@ class FWGet():
             tprint("Failed to connect to the repo, using local files if available (requests.ConnectionError)")
             noInternet = True
         if self.model.startswith('m365'):
-            if FWtype is 'DRV' and self.getboth is False:
+            if FWtype == 'DRV' and not self.getboth:
                 filename = FWtype.upper() + version + ".bin.enc"
                 self.getboth = True
             else:
