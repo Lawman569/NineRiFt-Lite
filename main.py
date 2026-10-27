@@ -73,7 +73,7 @@ class NineRiFt(App):
 
     @specialthread
     def fwget_select_model(self, screen, mod):
-        if mod is not 'Model':
+        if mod != 'Model':
             self.fwget.setModel(mod)
             self.fwget.setRepo("https://files.scooterhacking.org/" + mod + "/fw/repo.json")
             tprint('loading repo')
@@ -90,25 +90,25 @@ class NineRiFt(App):
     def executecmd(self, c):
         if self.conn.state == 'connected':
             tprint(c+' execute')
-            if c is 'lock':
+            if c == 'lock':
                 self.com.lock()
-            if c is 'unlock':
+            if c == 'unlock':
                 self.com.unlock()
-            if c is 'reboot':
+            if c == 'reboot':
                 self.com.reboot()
-            if c is 'powerdown':
+            if c == 'powerdown':
                 self.com.powerdown()
-            if c is 'sniff':
+            if c == 'sniff':
                 self.com.sniff()
-            if c is 'dump':
-                if self.com.device is not '':
+            if c == 'dump':
+                if self.com.device != '':
                     self.com.dump(self.com.device)
                 else:
                     tprint('set device first')
-            if c is 'info':
+            if c == 'info':
                 self.com.info()
-            if c is 'changesn':
-                if self.com.new_sn is not '':
+            if c == 'changesn':
+                if self.com.new_sn != '':
                     self.com.changesn(self.com.new_sn)
                 else:
                     tprint('set NewSN first')
@@ -118,11 +118,11 @@ class NineRiFt(App):
     def selfile_filter(self, mod, vers, dev):
             check = ['!.md5']
             filters = []
-            if mod is 'm365':
-                if dev is not 'DRV':
+            if mod == 'm365':
+                if dev != 'DRV':
                     sf = ['*.bin']
                     filters = sf+check
-                elif dev is 'DRV':
+                elif dev == 'DRV':
                     if vers=='>=141':
                         sf = ['*.bin.enc']
                     elif vers=='<141':
@@ -130,13 +130,13 @@ class NineRiFt(App):
                     else:
                         sf = ['']
                     filters = sf+check
-            if mod is 'm365pro':
-                if dev is 'DRV':
+            if mod == 'm365pro':
+                if dev == 'DRV':
                     sf = ['*.bin.enc']
                 else:
                     sf = ['*.bin']
                 filters = sf+check
-            if mod is 'esx' or 'max':
+            if mod == 'esx' or mod == 'max':
                 sf = ['*.bin.enc']
                 filters = sf+check
             print('selfile_filter set to %s' % filters)
@@ -162,22 +162,22 @@ class NineRiFt(App):
         values = ['BLE', 'DRV', 'BMS']
         if mod.startswith('m365'):
             self.hasextbms = False
-            if mod is 'm365':
+            if mod == 'm365':
                 self.versel = True
-            elif mod is 'm365pro':
+            elif mod == 'm365pro':
                 self.versel = False
-        if mod is 'esx':
+        elif mod == 'esx':
             self.versel = False
             self.hasextbms = True
-        if mod is 'max':
+        elif mod == 'max':
             self.versel = False
             self.hasextbms = False
-        if self.hasextbms is True:
+        if self.hasextbms:
             try:
                 values.append('ExtBMS')
             except:
                 print('ExtBMS entry already present')
-        if self.hasextbms is False:
+        if not self.hasextbms:
             try:
                 values.remove('ExtBMS')
             except:

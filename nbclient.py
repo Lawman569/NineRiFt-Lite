@@ -60,11 +60,11 @@ class Client(EventDispatcher):
                 tprint('select interface first')
                 self.disconnect()
 
-            if self.transport is '':
+            if self.transport == '':
                 self.disconnect()
                 tprint('select protocol first')
 
-            if self.transport is not '' and self.link is not None:
+            if self.transport != '' and self.link is not None:
                 link.__enter__()
                 # This is split into two parts due to some link implementations
                 # (namely droidble) requiring some initalization in main thread...
@@ -79,7 +79,7 @@ class Client(EventDispatcher):
     @specialthread
     def _connect_inner(self, link):
         try:
-            if self.address is '':
+            if self.address == '':
                 ports = link.scan()
                 if not link.scanned.is_set():
                     link.scanned.wait(link.timeout)
@@ -90,7 +90,7 @@ class Client(EventDispatcher):
                 else:
                     self.address = ports[0]
                 link.open(self.address)
-            elif self.address is not '':
+            elif self.address != '':
                 link.open(self.address)
 
             transport = None
@@ -101,7 +101,7 @@ class Client(EventDispatcher):
                 from py9b.transport.xiaomi import XiaomiTransport
                 transport = XiaomiTransport(link)
 
-                if transport.execute(ReadRegs(BT.ESC, 0x68, "<H"))[0] > 0x081 and self.link is ('ble'):
+                if transport.execute(ReadRegs(BT.ESC, 0x68, "<H"))[0] > 0x081 and self.link == 'ble':
                     transport.keys = link.fetch_keys()
                     transport.recover_keys()
                     tprint('Keys recovered')
