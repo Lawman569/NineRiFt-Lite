@@ -104,6 +104,7 @@ class TestLoadRepoSafety(unittest.TestCase):
         self.cache = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.cache, ignore_errors=True)
         self.fw = fwget.FWGet(self.cache)
+        self.fw.repoURL = REPO_URL  # mirrors real flow: setRepo() then loadRepo()
         return self.fw
 
     def test_valid_repo_payload_fully_loads(self):
